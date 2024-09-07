@@ -1,0 +1,139 @@
+*{
+    padding: 0;
+    margin: 0;
+    overflow-y: hidden;
+}
+
+.app {
+    height: 100%;
+    background-image: url("../../public/menu_bg.png");
+    background-position: 50% 30%;
+    background-size: 1920px auto;
+}
+
+.card {
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border:2px solid black;
+    border-radius: 25px 25px;
+    background-color: azure;
+    box-shadow: 5px 5px 5px 5px rgb(44, 44, 44);
+}
+
+.center-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 85%;
+}
+
+.card-header {
+    font-size: 30px;
+    font-weight: bold;
+    padding-bottom: 40px;
+    text-align: center;
+}
+
+.card-body {
+    font-size: 20px;
+}
+
+.row {
+    padding-bottom: 10px; 
+}
+
+.lgn {
+    padding-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rgstr {
+    padding-top: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#email, #password, #name, #password-confirm {
+    border-radius: 25px 25px;
+    height: 28px;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.form-check {
+    font-size: 14px;
+}
+
+.form-checkbox {
+    height: 11px;
+    width: 11px;
+}
+
+.btn-primary {
+  background-color: #0db136;
+  border: none;
+  color: white;
+  padding: 10px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.nav-wrap {
+    display: flex;
+    justify-content: space-between;
+}
+
+.navbar-r {
+    margin-top: 5px;
+    list-style-type: none;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 30px 30px;
+    background-color: azure;
+}
+
+.nav-link {
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 25px;
+    padding: 10px;
+}
+
+.app a:link, .app a:visited { 
+    text-decoration: none;
+    color: black;
+} 
+
+.app a:active{
+    text-decoration: none;
+    border: none;
+}
+.app a:hover { 
+    text-decoration: none;
+    color: #0db136;
+  }
+
+.invalid-feedback {
+    color: red;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.navbar-l {
+    position: relative;
+    height: 60px;
+    width: 342px;
+}
+
+.img-container {
+    background: url("../../public/Logo.png");
+    height: 100%;
+}

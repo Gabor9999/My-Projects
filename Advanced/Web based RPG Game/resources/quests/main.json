@@ -1,0 +1,87 @@
+{
+    "0": {
+        "title": "Let's go home",
+        "objectives": [
+            "Follow the route home"
+        ],
+        "reward": 0,
+        "party": 0
+    },
+    "1": {
+        "title": "Protect your home",
+        "objectives": [
+            "Defeat the intruders",
+            "Investigate the area",
+            "Get back to town"
+        ],
+        "reward": 100,
+        "party": 1
+    },
+    "2": {
+        "title": "Stocking up",
+        "objectives": [
+            "Gather resources",
+            "Report to Chief"
+        ],
+        "reward": 100,
+        "party": 0
+    },
+    "3": {
+        "title": "For the citizens",
+        "objectives": [
+            "Complete the citizen's request",
+            "Check in with Chief",
+            "Take part in the tournament"
+        ],
+        "reward": 250,
+        "party": 0
+    },
+    "4": {
+        "title": "Ambushed",
+        "objectives": [
+            "Get some rest",
+            "Help out the guards",
+            "Return to the village for reinforcement",
+            "Talk to Chief about what's next"
+        ],
+        "reward": 500,
+        "party": 0
+    },
+    "5": {
+        "title": "Looking for something",
+        "objectives": [
+            "Look for the book in the forest to the east",
+            "Deliver the book",
+            "Talk to Chief when you're ready"
+        ],
+        "reward": 250,
+        "party": 0
+    },
+    "6": {
+        "title": "Training arc",
+        "objectives": [
+            "Start a battle outside the post",
+            "Report your experiences",
+            "Talk to Chief about the responses"
+        ],
+        "reward": 500,
+        "party": 2
+    },
+    "7": {
+        "title": "Before you go",
+        "objectives": [
+            "Meet the squad at the south exit",
+            "Go through the exit"
+        ],
+        "reward": 0,
+        "party": 3
+    },
+    "8": {
+        "title": "For a safer place",
+        "objectives": [
+            "Save The Village"
+        ],
+        "reward": 0,
+        "party": 3
+    }
+}

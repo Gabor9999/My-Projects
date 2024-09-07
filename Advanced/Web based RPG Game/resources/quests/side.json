@@ -1,0 +1,58 @@
+{
+    "0": {
+        "title": "Monster hunt",
+        "objectives": [
+            "Kill 5 monsters around town (grass)"
+        ],
+        "reward": 100,
+        "amount": 5
+    },
+    "1": {
+        "title": "Guard's request",
+        "objectives": [
+            "Kill 4 shamans outside the post"
+        ],
+        "reward": 100,
+        "amount": 4
+    },
+    "2": {
+        "title": "Guard's request 2",
+        "objectives": [
+            "Kill 3 warriors outside post"
+        ],
+        "reward": 100,
+        "amount": 3
+    },
+    "3": {
+        "title": "Looter's paradise",
+        "objectives": [
+            "Open all chests in the Maze area"
+        ],
+        "reward": 0,
+        "amount": 8
+    },
+    "4": {
+        "title": "Monster Slayer Bronze",
+        "objectives": [
+            "Kill 100 (regular) monsters"
+        ],
+        "reward": 500,
+        "amount": 100
+    },
+    "5": {
+        "title": "Monster Slayer Silver",
+        "objectives": [
+            "Kill 50 shamans"
+        ],
+        "reward": 1000,
+        "amount": 50
+    },
+    "6": {
+        "title": "Monster Slayer Gold",
+        "objectives": [
+            "Kill 25 warriors"
+        ],
+        "reward": 1500,
+        "amount": 25
+    }
+}

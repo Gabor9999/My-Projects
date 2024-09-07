@@ -1,0 +1,281 @@
+Hello there! Welcome to the Tutorial!
+I know, I know, you probably know all this stuff...
+ł
+Click here if you want to skip the tutorial
+.
+Oh.
+You actually stayed.
+Well then.
+Let's get started.
+Use WASD to move.
+~
+Nothing suprising so far right?
+Press I to open your inventory.
+~
+You can use Esc to exit or you know...
+Use the button at the top right...
+No, do not close the website please, I meant the inventory screen...
+~
+Next up let me tell you about consumeable items.
+You're able to heal outside of battle by pressing Q and selecting the character you want to heal.
+Yes, I know there is only 1 right now, but still.
+Come on try it!
+~
+You get it!
+Now, there only seems to be one way you could go, let's see what's up ahead!
+~
+Wow it's a chest, let's check it out!
+Press E to interact with objects.
+~
+You recieved a potion!
+It gave you a potion, very nice.
+Look out for objects to interact with, as it may contain something valueable or necessary for you to continue!
+ß
+It seems like someone else wanted that potion as well.
+Let's defend ourselves.
+Đ010
+ ...
+What?
+That's all you need to know.
+Now go, get out of here!
+Ł
+It was a sunny afternoon...
+Working in the forest like I always did...
+(It's getting late...I should head home for today)
+~
+Something seems strange here...
+(Someone...or something is here)
+Đ010
+What was that? Was that...a monster? Really?
+(Doesn't matter, I have to hurry now!)
+.
+~
+-Skye, I'm so glad you are okay!
+Chief! What's going on here? These monsters are everywhere!
+-I'm not sure myself, but we have to fight! Let's talk after we defeated all of them!
+@
+ß0
+I think that's all of them.
+-For now at least.
+Where did all of them come from?
+-I don't know... We will find that out tomorrow, you should rest up for now!
+Very well then.
+,
+-Good morning! Now that you're awake, shall we go?
+Sure.
+ä
+~
+-Skye, let me teach you something, I think you will be able to do it!
+#
+{You have learned the 'Slash' skill}
+I did it! Thank you, I will make good use of this technique!
+~
+-Hold on Skye, this seems interesting! A trail of corpses, all leading deep into the forest.
+I say we go and investigate it.
+-We should...but I have a bad feeling about this...
+ß1
+Monsters...a lot of them...this is bad.
+-We can't defeat them now. We should turn back.
+ß2
+
+-Let's head back to the village for now!
+ä
+~
+-What we discovered is...scary to be frank.
+We are not ready for that yet.
+-No, definitely not. Right now what we need is more weapons and armor...
+For who?
+-For anyone who is willing to fight... Skye, gather resources then report to me. Meanwhile I will look for new fighters.
+Okay.
+(Maybe I should look around the area and fight some monsters while I'm at it.)
+@
+~
+ß3
+(That should be enough, let's head back.)
+ä
+~
+-You're here at last, I take it that means you have gathered enough...
+This should be enough for a few weapons.
+-I've got you, give me a second...
+(...)
+ł
+{You've recieved a 'Stone sword'}
+-Here, a new sword for you! There should be enough for a few of us as well. Speaking of which, I managed to recruit a couple of newbies.
+The more the merrier, they are very welcome.
+-I'm glad they could join, but remember they are still in training, they are not ready, nobody is.
+You're right. We should find a way to get stronger!
+-I will think about it, meanwhile a request came up from one of the citizens, take a look..
+@
+Alright, consider it done.
+-Thank you, oh and if you have some materials and resources let me know. I can always make you something new.
+Sure thing Chief, see you later.
+-See ya.
+$0
+¤
+~
+-Skye, I thought of a way we could get stronger. We are hosting a tournament among each other, so we can learn each others skills.
+Seems like a good idea. Looking forward to it.
+-Great, talk to me when you are ready.
+ä
+~
+-Are you ready then?
+Yeah, let's go!
+Ł
+-Welcome fighters to this makeshift tournament! Remember our goal today is to learn from each other. Our real enemies are waiting for us outside.
+(...)
+-Anyways, I wish you all good luck, let's begin Round 1.
+Đ010
+-Easily taken care of, but don't get ahead of yourself, she is just a rookie.
+-Onto the next one!
+Đ010
+-Skye with the victory, great showing of skills out there for both of you. Let's patch you up, before we continue.
+-And with that we have 2 contestants left, let the final round commence.
+Đ010
+(*Crowd cheers*)
+-Gentleman, we have a winner! Congratulations, you showed us amazing skill and will to fight.
+(*Crowd cheers*)
+-You deserve a reward as well. You know that I have served our cavalry in the past.
+Of course Chief, we talk about it all the time.
+-Than you could also remember that I have kapt my chestplate as a souvenir...but now it's yours!
+Are you sure?
+-Yes, that is my gift to you as well as a reward for your efforts today. Hope you all learned a lot today!
+ł{You have recieved a 'Knight's chestplate'}
+Which skill would you like to take?
+*
+-...And with that I would like to thank you all for participating today. See you tomorrow!
+(I need a rest at home)
+.
+@
+~
+-Skye, report came up that nearby posts are being overwhelmed, please go and help them out!
+On it, Chief!
+ä
+~
+_Skye, glad you have arrived! Monsters have ambushed the place overnight. There is too many of them.
+(It's strange, they are tough, but the guard should have been able to hold them up.)
+What's the situation out there, why are we struggling so much?
+_I don't know, we are dealing heavy blows on them, but it doesn't seem to affect them.
+(...Seems like I just have to get out there and see for myself)
+Don't worry about it, keep hold of them for now, I will join you. 
+Đ110
+(They do seem a bit tougher... but I still don't get it...)
+_Over here! I think we found it!
+(Found what?)
+Đ120
+So this shaman was healing up the others, that's why they seemed unbeatable?
+_I guess that explains it, doesn't it? Oh and also...not just healed...but resurrected as well.
+Well...that's new...but I guess not unexpected. Great work today, I'm going back to the village and send your relief as soon as possible.
+(What more do they have?...)
+{New Side Quest Available}
+$1
+ä
+~
+Listen up please! Monsters have been taken care of. Any guards available please report to duty to take over from the injured.
+_Got it! Hurry up guys!
+(These guys are amazing. No need for motivation, ready for anything. We have good people here, that's why I need to protect them...)
+ä
+~
+-Skye, heard you took care of thing out there, great job!
+Thank you.
+-Here this is for you.
+ł{You've recieved a 'Potion' and 'Common Leggings'}
+-A small reward for your efforts today.
+It was the least I could do. Glad the village is safe for the time being.
+So...what's next?
+-What should be next?
+I don't know it's just... you always have something for me to do, you know. Figured it's the same this time.
+-Well there is one thing actually... rumour has it that there is a book lost in the forest to the east. Could you take a look?
+If you say it's worth it...sure why not.
+(At least I get to look outside for a bit, see what it's like)
+{New Side Quest Available}
+$3
+@
+~
+{You've acquired the 'Book of Martial Arts'}
+This is it, finally found it. Took me longer than expected. Let's go back now... Ohh man.
+ä
+~
+Hey Chief, I found the book you wanted, here you go!
+-Thank you, Skye.
+Can I ask why you needed it?
+-Of course, it's for the rookies. Their training is almost ready with this.
+The last battle took a lot from us, but their spirits are still not broken. They are tough.
+-Thankfully yes, but they still lack combat experience... so I thought you could take one of them out for field practice.
+I don't see a problem with it.
+-Great, then please talk to me to choose a companion, when you are ready.
+ä
+~
+-Please choose who you would like to train!
+*
+Let's get going then!
+@
+~
+(These were a lot for a trainee, but he handled it very well. Might have found a gem Chief...)
+Let's slay some more, than I think that it for toda... What is that?..*
+Đ030
+(That monster was tough, we don't have much time if they are getting tougher and increasing their numbers as well...)
+You know what... I think I have seen enough...or rather we have seen enough, I think you got enough experience for today.
+{New Side Quest Available}
+$2
+ä
+~
+-Welcome back, how did he do?
+Very well actually, but we had to cut it short... a new kind of monster has appeared, we defeated it, but it is tougher than any before.
+-The both of you? Well then it was a worthy experience indeed.
+It was, although I have my concerns.
+-About what?
+About how we can defeat all of them, I believe we have waited long enough. Think about it, it is pointless to wait anymore, they will only get stronger.
+They evolve, just as humans do. Now we can defeat them, but that might not be the case later.
+-I...agree. We won't have a better chance than this any time soon, but if are going to do this, everyone needs to be alerted and ready.
+Are you sure everyone will be okay with this?
+-No, how could I be... but we have the best chance now, their numbers will only get significantly larger.
+Plus we can move with a smaller more powerful squad with backup.
+-Exactly. We spearhead an attack from the center, push through and take out their chief. The others will deal with the mess then we can help them later.
+It's a risky plan, but it could work... I'm with you of course. You can count on me.
+-I know Skye, I'm going to talk about it with the squad, you should rest then talk to me, when you're ready to go!
+ä
+~
+-Skye, I have good news, everyone agreed with our plan, after they are prepared, they shall meet us at the entrance to the nest.
+I'm glad everyone is in support. They are real fighters. Last I remember though the entrance was blockaded with stones and other heavy object.
+-You remember correctly, I already sent a squad to clear that up. It didn't hold 'em up enough, so we might as well extend our line of defence there.
+So I guess that's our meeting spot.
+-Yes it is, take care of anything you feel like beforehand, than the three of us will go first in.
+My trainee is coming huh? He is very talented, I just really hope I'm not too overconfident... I'm a bit afraid of the results after all.
+-We have what we have, no point in doubting yourself now.
+You're right. I'm sorry.
+-Don't be, all of us are afraid a bit. We just hide it well.
+All the more reason why I need to be stronger.
+-That's what I'm talking about. See you there, Skye.
+Yes Chief!
+{New Side Quest Available}
+$4
+$5
+$6
+@
+~
+-So...we are ending it today, aren't we?
+That's the plan, I'm ready to go whenever you are.
+-Let's go then.
+ä
+~
+¤
+-The path to danger begins here, no turning back now.
+Like I would...Let's begin.
+@
+~
+-Looks like there will be even more of them from now, be careful.
+~
+(This place looks and feels like danger...like death... got to move on)
+~
+-Look! Their nest, we are very close. Gear up and rest if you need to.
+~
+-Look, Skye whatever happens here, just know that I'm grateful to you for everthing that you've done! For the village, for me, you're a hero!
+Thank you, truly! This is not goodbye though, we will win here! We are stronger!
+(At least I hope...)
+~
+The final boss guys! Let's do this!
+~
+We have done it! The warrior leader has fallen.
+-Oh my, this was exhausting, but at last we can rest easy...
+.
+ 
