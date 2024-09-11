@@ -8,7 +8,6 @@ import threading
 
 teamsCont = ['Atlanta Hawks', 'Boston Celtics', 'Cleveland Cavaliers', 'New Orleans Pelicans', 'Chicago Bulls', 'Dallas Mavericks', 'Denver Nuggets', 'Golden State Warriors', 'Houston Rockets', 'Los Angeles Clippers', 'Los Angeles Lakers', 'Miami Heat', 'Milwaukee Bucks', 'Minnesota Timberwolves', 'Brooklyn Nets', 'New York Knicks', 'Orlando Magic', 'Indiana Pacers', 'Philadelphia 76ers', 'Phoenix Suns', 'Portland Trail Blazers', 'Sacramento Kings', 'San Antonio Spurs', 'Oklahoma City Thunder', 'Toronto Raptors', 'Utah Jazz', 'Memphis Grizzlies', 'Washington Wizards', 'Detroit Pistons', 'Charlotte Hornets']
 teamIDs = [1610612737, 1610612738, 1610612739, 1610612740, 1610612741, 1610612742, 1610612743, 1610612744, 1610612745, 1610612746, 1610612747, 1610612748, 1610612749, 1610612750, 1610612751, 1610612752, 1610612753, 1610612754, 1610612755, 1610612756, 1610612757, 1610612758, 1610612759, 1610612760, 1610612761, 1610612762, 1610612763, 1610612764, 1610612765, 1610612766]
-images = []
 #pd.set_option("future.no_silent_downcasting", True)
 
 class App(threading.Thread):
@@ -49,6 +48,7 @@ class App(threading.Thread):
         self.mainFrame = tk.Frame(master=self.root,width=500,height=600,bg="white")
         self.tableFrame = tk.Frame(master=self.mainFrame, bg="white")
 
+        self.images = []
         self.playerCont = tk.StringVar()
         self.teamCont = tk.StringVar()
         self.selectedCat = tk.StringVar()
@@ -246,6 +246,7 @@ class App(threading.Thread):
         self.openStatus = 1
 
     def toggleTeam(self):
+        self.images = []
         if self.openStatus == 2:
             self.openStatus = 0
             self.mainFrame.pack_forget()
@@ -294,16 +295,54 @@ class App(threading.Thread):
         self.openStatus = 0
         for wid in self.mainFrame.grid_slaves():
             wid.grid_forget()
-        self.mainFrame.columnconfigure(4,weight=1, uniform='same')
+        self.photos = []
+        self.buttons = []
+        #for i in range(6):
+        #    self.mainFrame.rowconfigure(i, weight=1, uniform='same')
+        #    for j in range(5):
+        #        self.mainFrame.columnconfigure(j, weight=1, uniform='same')
+        #        self.image = Image.open('images/' + teamsCont[i*5+j].replace(" ","") +'.png')
+        #        self.photo = ImageTk.PhotoImage(self.image)
+        #        images.append(self.photo)
+        #        self.bf = tk.font.Font(family = "Times New Roman",  size = 11, weight = "bold")
+        #        self.e = tk.Button(self.mainFrame,text=teamsCont[i*5+j], font=self.bf, image=images[i*5+j], compound=tk.TOP, command=lambda arg1=teamsCont[i*5+j], arg2=(i*5+j): self.selectTeam(arg1, arg2))
+        #        self.e.grid(row=i, column=j, sticky="news", columnspan=1, rowspan=1)
+        window_width = self.mainFrame.winfo_width()
+        window_height = self.mainFrame.winfo_height()
         for i in range(6):
-            self.mainFrame.rowconfigure(i, weight=1)
+            self.mainFrame.rowconfigure(i, weight=1, uniform='same')  
             for j in range(5):
-                self.image = Image.open('images/' + teamsCont[i*5+j].replace(" ","") +'.png').resize((120,90))
-                self.photo = ImageTk.PhotoImage(self.image)
-                images.append(self.photo)
-                self.bf = tk.font.Font(family = "Times New Roman",  size = 11, weight = "bold")
-                self.e = tk.Button(self.mainFrame,text=teamsCont[i*5+j], font=self.bf, image=images[i*5+j], compound=tk.TOP, command=lambda arg1=teamsCont[i*5+j], arg2=(i*5+j): self.selectTeam(arg1, arg2))
-                self.e.grid(row=i, column=j, sticky="news", columnspan=1, rowspan=1)
+                self.mainFrame.columnconfigure(j, weight=1, uniform='same')
+                self.image = Image.open('images/' + teamsCont[i*5+j].replace(" ","") +'.png')
+                self.images.append(self.image)
+                perc_minus = float("{:.2f}".format(0.2 - (window_height/self.root.winfo_screenheight()/5)))
+                print(perc_minus)
+                self.photo = ImageTk.PhotoImage(self.image.resize((int(window_width // 6 * (0.75-perc_minus)), int(window_height // 5 * (0.75-perc_minus)))))
+                self.photos.append(self.photo)
+                self.bf = tk.font.Font(family="Times New Roman", size=11, weight="bold")
+                self.button = tk.Button(self.mainFrame, text=teamsCont[i*5+j], font=self.bf,
+                               image=self.photos[-1], compound=tk.TOP,
+                               command=lambda arg1=teamsCont[i*5+j], arg2=(i*5+j): self.selectTeam(arg1, arg2))
+
+                self.button.grid(row=i, column=j, sticky="news", columnspan=1, rowspan=1)
+                self.buttons.append(self.button)
+        self.mainFrame.bind("<Configure>", self.resizeImages)
+    
+    def resizeImages(self, event):
+        window_width = self.mainFrame.winfo_width()
+        window_height = self.mainFrame.winfo_height()
+
+        perc_minus = float("{:.2f}".format(0.2 - (window_height/self.root.winfo_screenheight()/5)))
+
+        cell_width = int(window_width // 6 *(0.75-perc_minus))
+        cell_height = int(window_height // 5*(0.75-perc_minus))
+
+        for i in range(30):
+            resized_image = self.images[i].resize((cell_width, cell_height))
+            self.photo = ImageTk.PhotoImage(resized_image)
+            self.buttons[i].config(image=self.photo)
+            self.buttons[i].image = self.photo
+
     
     def selectTeam(self,newtext, num):
         self.tableFrame.destroy()
