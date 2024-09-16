@@ -1,6 +1,6 @@
 import tkinter as tk
 from PIL import Image, ImageTk
-from nba_api.stats.endpoints import playergamelogs, teamplayerdashboard
+from nba_api.stats.endpoints import playergamelogs, teamplayerdashboard, playerestimatedmetrics, playerdashboardbylastngames
 from nba_api.stats.static import players
 from pandastable import Table
 import pandas as pd
@@ -8,7 +8,8 @@ import threading
 
 teamsCont = ['Atlanta Hawks', 'Boston Celtics', 'Cleveland Cavaliers', 'New Orleans Pelicans', 'Chicago Bulls', 'Dallas Mavericks', 'Denver Nuggets', 'Golden State Warriors', 'Houston Rockets', 'Los Angeles Clippers', 'Los Angeles Lakers', 'Miami Heat', 'Milwaukee Bucks', 'Minnesota Timberwolves', 'Brooklyn Nets', 'New York Knicks', 'Orlando Magic', 'Indiana Pacers', 'Philadelphia 76ers', 'Phoenix Suns', 'Portland Trail Blazers', 'Sacramento Kings', 'San Antonio Spurs', 'Oklahoma City Thunder', 'Toronto Raptors', 'Utah Jazz', 'Memphis Grizzlies', 'Washington Wizards', 'Detroit Pistons', 'Charlotte Hornets']
 teamIDs = [1610612737, 1610612738, 1610612739, 1610612740, 1610612741, 1610612742, 1610612743, 1610612744, 1610612745, 1610612746, 1610612747, 1610612748, 1610612749, 1610612750, 1610612751, 1610612752, 1610612753, 1610612754, 1610612755, 1610612756, 1610612757, 1610612758, 1610612759, 1610612760, 1610612761, 1610612762, 1610612763, 1610612764, 1610612765, 1610612766]
-#pd.set_option("future.no_silent_downcasting", True)
+# Python version 3.12 warning
+pd.set_option("future.no_silent_downcasting", True)
 
 class App(threading.Thread):
     def __init__(self):
@@ -74,8 +75,8 @@ class App(threading.Thread):
 
         self.season = tk.Label(self.mainFrame, text="Season: 2023-24", bg="white", borderwidth=2, relief="solid", pady=10).grid(row=0, sticky="news", columnspan=4)
 
-        self.btn_RegSea = tk.Button(self.mainFrame, text="Regular Season", height=2, bg="lightgreen", command=lambda: self.switchTwo(True))
-        self.btn_Playoffs = tk.Button(self.mainFrame, text="Playoffs", height=2, bg="grey", command=lambda: self.switchTwo(False))
+        self.btn_RegSea = tk.Button(self.mainFrame, text="Regular Season", height=2, bg="lightgreen", command=lambda: self.switchSeasonType(True))
+        self.btn_Playoffs = tk.Button(self.mainFrame, text="Playoffs", height=2, bg="grey", command=lambda: self.switchSeasonType(False))
 
         self.btn_RegSea.grid(row=1, column=0,columnspan=2, sticky="news")
         self.btn_Playoffs.grid(row=1,column=2, columnspan=2, sticky="news")
@@ -83,16 +84,16 @@ class App(threading.Thread):
         self.searchType = 0
 
         self.btn_GameLogs = tk.Button(self.mainFrame, text="Every Game Log", 
-        height=2, width=20, bg="lightgreen", command=lambda: self.switchColor(0))
+        height=2, width=20, bg="lightgreen", command=lambda: self.switchSearchType(0))
 
         self.btn_LastGame = tk.Button(self.mainFrame, text="Last Game", 
-        height=2, width=20, bg="grey", command=lambda: self.switchColor(1))
+        height=2, width=20, bg="grey", command=lambda: self.switchSearchType(1))
 
         self.btn_Last5Games = tk.Button(self.mainFrame, text="Last 5 Games", 
-        height=2, width=20, bg="grey", command=lambda: self.switchColor(5))
+        height=2, width=20, bg="grey", command=lambda: self.switchSearchType(5))
 
         self.btn_Last10Games = tk.Button(self.mainFrame, text="Last 10 Games", 
-        height=2, width=20, bg="grey", command=lambda: self.switchColor(10))
+        height=2, width=20, bg="grey", command=lambda: self.switchSearchType(10))
 
         self.btn_GameLogs.grid(row=3,column=0, sticky="news")
         self.btn_LastGame.grid(row=3,column=1, sticky="news")
@@ -102,8 +103,9 @@ class App(threading.Thread):
 
         self.loading = tk.Label(self.tableFrame, text="Loading", bg="white")
         self.result = 0
+        self.player_id = 0
     
-    def switchTwo(self, bo):
+    def switchSeasonType(self, bo):
         if bo:
             self.btn_RegSea.config(background="lightgreen")                
             self.btn_Playoffs.config(background="grey")
@@ -114,7 +116,7 @@ class App(threading.Thread):
             self.btn_Playoffs.config(background="lightgreen")
             self.seasonType = 'Playoffs'
 
-    def switchColor(self, num):
+    def switchSearchType(self, num):
         match num:
             case 0:
                 self.btn_GameLogs.config(background="lightgreen")
@@ -170,47 +172,79 @@ class App(threading.Thread):
             self.displayResults()
 
     def displayResults(self):
+        self.gamesPlayed = len(self.result)
+        if(self.gamesPlayed == 0):
+            Dfont = tk.font.Font(family = "Courier New", size = 22, weight = "bold")
+            self.result = tk.Label(self.mainFrame, text="Player did not play in any of the games", font=Dfont)
+            if(self.openStatus == 3):
+                self.result.grid(row=7, columnspan=4, sticky="news")
+            else:
+                self.result.grid(row=6, columnspan=4, sticky="news")
+            return
         self.table = pt = Table(self.tableFrame, dataframe=self.result.astype(object),
                                 #showtoolbar=True, showstatusbar=True
                                )
         pt.show()
 
         if(self.openStatus == 3):
-            self.gamesPlayed = len(self.playerdata[self.selectedCat.get()])
-            if(self.gamesPlayed == 0):
-                Dfont = tk.font.Font(family = "Courier New", size = 22, weight = "bold")
-                self.result = tk.Label(self.mainFrame, text="Player did not play in any of the games", font=Dfont)
-                self.result.grid(row=7, columnspan=4, sticky="news")
-                return
+            self.betResultFrame = tk.Frame(master=self.mainFrame, bg="grey")
             self.hit = 0
             self.avg = 0
-            self.avgDif = 0
-            for match in self.playerdata[self.selectedCat.get()]:
+            for match in self.result[self.selectedCat.get()]:
                 if (match >= float(self.amount.get()) and self.overUnder.get() == 'Over') or (match < float(self.amount.get()) and self.overUnder.get() == 'Under'):
                     self.hit += 1
                 self.avg += match
-                self.avgDif += match - float(self.amount.get())
-            self.betResult = tk.Label(self.mainFrame, text="Games played: " + str(self.gamesPlayed)
-            + "\n" + "Play hit " + str(self.hit) + " times"
-            + "\n" + "Average difference: " + str("{:.2f}".format(self.avgDif/self.gamesPlayed))
-            + "\n" + "Category average in these games: " + str("{:.2f}".format(self.avg/self.gamesPlayed)))
+            self.betResult = tk.Label(self.betResultFrame, text="Games played: " + str(self.gamesPlayed)).grid(row=0)
+            self.betResult = tk.Label(self.betResultFrame, text="Play hit " + str(self.hit) + " times").grid(row=1)
+            self.betResult = tk.Label(self.betResultFrame, text="Average difference: " + str("{:.2f}".format((self.avg - (float(self.amount.get()) * self.gamesPlayed))/self.gamesPlayed))).grid(row=2)
+            self.betResult = tk.Label(self.betResultFrame, text=self.selectedCat.get() + " average in these games: " + str("{:.2f}".format(self.avg/self.gamesPlayed))).grid(row=3)
+            match self.selectedCat.get():
+                case 'AST':
+                    metrics = playerestimatedmetrics.PlayerEstimatedMetrics(season="2023-24", season_type=self.seasonType).get_data_frames()[0]
+                    metrics = metrics[metrics['PLAYER_ID'] == self.player_id]
+                    self.betResult = tk.Label(self.betResultFrame, text="Estimated assist ratio: " + str(metrics['E_AST_RATIO'].iloc[0]) + "%").grid(row=4)
+                    self.betResult = tk.Label(self.betResultFrame, text="Estimated metric rank: " + str(metrics['E_AST_RATIO_RANK'].iloc[0])).grid(row=5)
+                case 'REB':
+                    metrics = playerestimatedmetrics.PlayerEstimatedMetrics(season="2023-24", season_type=self.seasonType).get_data_frames()[0]
+                    metrics = metrics[metrics['PLAYER_ID'] == self.player_id]
+                    self.betResult = tk.Label(self.betResultFrame, text="Estimated rebound percentage: " + str(metrics['E_REB_PCT'].iloc[0]) + "%").grid(row=4)
+                    self.betResult = tk.Label(self.betResultFrame, text="Estimated metric rank: " + str(metrics['E_REB_PCT_RANK'].iloc[0])).grid(row=5)
+                case 'FG3M':
+                    metrics = playerdashboardbylastngames.PlayerDashboardByLastNGames(season="2023-24", season_type_playoffs=self.seasonType, per_mode_detailed='PerGame', player_id=self.player_id).get_data_frames()[0]
+                    self.betResult = tk.Label(self.betResultFrame, text="3pt made rank: " + str(metrics['FG3M_RANK'].iloc[0])).grid(row=4)
+                    self.betResult = tk.Label(self.betResultFrame, text="3pt percentage: " + str(metrics['FG3_PCT'].iloc[0]) + "%").grid(row=5)
+                    self.betResult = tk.Label(self.betResultFrame, text="3pt percentage rank: " + str(metrics['FG3_PCT_RANK'].iloc[0])).grid(row=6)
+                case 'STL':
+                    metrics = playerdashboardbylastngames.PlayerDashboardByLastNGames(season="2023-24", season_type_playoffs=self.seasonType, per_mode_detailed='PerGame', player_id=self.player_id).get_data_frames()[0]
+                    self.betResult = tk.Label(self.betResultFrame, text="Steals rank: " + str(metrics['STL_RANK'].iloc[0])).grid(row=4)
+                case 'BLK':
+                    metrics = playerdashboardbylastngames.PlayerDashboardByLastNGames(season="2023-24", season_type_playoffs=self.seasonType, per_mode_detailed='PerGame', player_id=self.player_id).get_data_frames()[0]
+                    self.betResult = tk.Label(self.betResultFrame, text="Blocks rank: " + str(metrics['BLK_RANK'].iloc[0])).grid(row=4)
+                case 'PTS':
+                    metrics = playerdashboardbylastngames.PlayerDashboardByLastNGames(season="2023-24", season_type_playoffs=self.seasonType, per_mode_detailed='PerGame', player_id=self.player_id).get_data_frames()[0]
+                    self.betResult = tk.Label(self.betResultFrame, text="Steals rank: " + str(metrics['PTS_RANK'].iloc[0])).grid(row=4)
+                
+            #+ "\n" + "Play hit " + str(self.hit) + " times"
+            #+ "\nSuccess rate: " + str("{:.1f}".format(100 * self.hit/self.gamesPlayed)) + "%"
+            #+ "\nAverage difference: " + str("{:.2f}".format((self.avg - (float(self.amount.get()) * self.gamesPlayed))/self.gamesPlayed))
+            #+ "\n" + self.selectedCat.get() + " average in these games: " + str("{:.2f}".format(self.avg/self.gamesPlayed)))
+            ##+ "\n" + "Estimated pctg: " + metrics['E_AST_RATIO'] + "%"
+            ##+ "\n" + "Estimated metric rank: " + metrics['E_AST_RATIO_RANK']
 
             ## Ideas:
             # DNP
             # Season averages
-
-            self.betResult.grid(row=7, column=0, sticky="news")
-
+            self.betResultFrame.grid(row=7, column=0, sticky="news")
             self.tableFrame.grid(row=7, column=1, columnspan=3, sticky="news")
         else:
             self.tableFrame.grid(row=6, columnspan=4, sticky="news")
 
     def searchPlayer(self, searchType, seasonType, playerCont):
-        player = players.find_players_by_full_name(playerCont)[0]['id']
+        self.player_id = players.find_players_by_full_name(playerCont)[0]['id']
         if(searchType != 0):
-            self.playerdata = playergamelogs.PlayerGameLogs(player_id_nullable=player,season_nullable='2023-24',season_type_nullable=seasonType,last_n_games_nullable=str(searchType)).get_data_frames()[0].filter(items=['GAME_DATE','MATCHUP','WL','MIN','FGM','FGA','FG_PCT','FG3M','FG3A','FG3_PCT','FTM','FTA','FT_PCT','OREB','DREB','REB','AST','STL','BLK','TOV','PF','PTS','PLUS_MINUS'])
+            self.playerdata = playergamelogs.PlayerGameLogs(player_id_nullable=self.player_id,season_nullable='2023-24',season_type_nullable=seasonType,last_n_games_nullable=str(searchType)).get_data_frames()[0].filter(items=['GAME_DATE','MATCHUP','WL','MIN','FGM','FGA','FG_PCT','FG3M','FG3A','FG3_PCT','FTM','FTA','FT_PCT','OREB','DREB','REB','AST','STL','BLK','TOV','PF','PTS','PLUS_MINUS'])
         else:
-            self.playerdata = playergamelogs.PlayerGameLogs(player_id_nullable=player,season_nullable='2023-24',season_type_nullable=seasonType).get_data_frames()[0].filter(items=['GAME_DATE','MATCHUP','WL','MIN','FGM','FGA','FG_PCT','FG3M','FG3A','FG3_PCT','FTM','FTA','FT_PCT','OREB','DREB','REB','AST','STL','BLK','TOV','PF','PTS','PLUS_MINUS'])
+            self.playerdata = playergamelogs.PlayerGameLogs(player_id_nullable=self.player_id,season_nullable='2023-24',season_type_nullable=seasonType).get_data_frames()[0].filter(items=['GAME_DATE','MATCHUP','WL','MIN','FGM','FGA','FG_PCT','FG3M','FG3A','FG3_PCT','FTM','FTA','FT_PCT','OREB','DREB','REB','AST','STL','BLK','TOV','PF','PTS','PLUS_MINUS'])
         self.playerdata['GAME_DATE'] = self.playerdata['GAME_DATE'].map(lambda x: str(x)[:-9])
         self.result = self.playerdata
     
@@ -222,11 +256,11 @@ class App(threading.Thread):
         self.result = self.info
     
     def searchBet(self, searchType, seasonType, selectedCat, playerCont):
-        player = players.find_players_by_full_name(playerCont)[0]['id']
+        self.player_id = players.find_players_by_full_name(playerCont)[0]['id']
         if(searchType != 0):
-            self.playerdata = playergamelogs.PlayerGameLogs(player_id_nullable=player,season_nullable='2023-24',season_type_nullable=seasonType,last_n_games_nullable=str(searchType)).get_data_frames()[0].filter(items=['GAME_DATE','MATCHUP',selectedCat])
+            self.playerdata = playergamelogs.PlayerGameLogs(player_id_nullable=self.player_id,season_nullable='2023-24',season_type_nullable=seasonType,last_n_games_nullable=str(searchType)).get_data_frames()[0].filter(items=['GAME_DATE','MATCHUP',selectedCat])
         else:
-            self.playerdata = playergamelogs.PlayerGameLogs(player_id_nullable=player,season_nullable='2023-24',season_type_nullable=seasonType).get_data_frames()[0].filter(items=['GAME_DATE','MATCHUP',selectedCat])
+            self.playerdata = playergamelogs.PlayerGameLogs(player_id_nullable=self.player_id,season_nullable='2023-24',season_type_nullable=seasonType).get_data_frames()[0].filter(items=['GAME_DATE','MATCHUP',selectedCat])
         self.playerdata['GAME_DATE'] = self.playerdata['GAME_DATE'].map(lambda x: str(x)[:-9])
         self.result = self.playerdata
     
@@ -297,16 +331,6 @@ class App(threading.Thread):
             wid.grid_forget()
         self.photos = []
         self.buttons = []
-        #for i in range(6):
-        #    self.mainFrame.rowconfigure(i, weight=1, uniform='same')
-        #    for j in range(5):
-        #        self.mainFrame.columnconfigure(j, weight=1, uniform='same')
-        #        self.image = Image.open('images/' + teamsCont[i*5+j].replace(" ","") +'.png')
-        #        self.photo = ImageTk.PhotoImage(self.image)
-        #        images.append(self.photo)
-        #        self.bf = tk.font.Font(family = "Times New Roman",  size = 11, weight = "bold")
-        #        self.e = tk.Button(self.mainFrame,text=teamsCont[i*5+j], font=self.bf, image=images[i*5+j], compound=tk.TOP, command=lambda arg1=teamsCont[i*5+j], arg2=(i*5+j): self.selectTeam(arg1, arg2))
-        #        self.e.grid(row=i, column=j, sticky="news", columnspan=1, rowspan=1)
         window_width = self.mainFrame.winfo_width()
         window_height = self.mainFrame.winfo_height()
         for i in range(6):
@@ -315,9 +339,8 @@ class App(threading.Thread):
                 self.mainFrame.columnconfigure(j, weight=1, uniform='same')
                 self.image = Image.open('images/' + teamsCont[i*5+j].replace(" ","") +'.png')
                 self.images.append(self.image)
-                perc_minus = float("{:.2f}".format(0.2 - (window_height/self.root.winfo_screenheight()/5)))
-                print(perc_minus)
-                self.photo = ImageTk.PhotoImage(self.image.resize((int(window_width // 6 * (0.75-perc_minus)), int(window_height // 5 * (0.75-perc_minus)))))
+                perc_minus = 0.2 - round(window_height/self.root.winfo_screenheight()/5,2)
+                self.photo = ImageTk.PhotoImage(self.image.resize((int(window_width // 6 * (0.76-perc_minus)), int(window_height // 5 * (0.76-perc_minus)))))
                 self.photos.append(self.photo)
                 self.bf = tk.font.Font(family="Times New Roman", size=11, weight="bold")
                 self.button = tk.Button(self.mainFrame, text=teamsCont[i*5+j], font=self.bf,
@@ -332,17 +355,16 @@ class App(threading.Thread):
         window_width = self.mainFrame.winfo_width()
         window_height = self.mainFrame.winfo_height()
 
-        perc_minus = float("{:.2f}".format(0.2 - (window_height/self.root.winfo_screenheight()/5)))
+        perc_minus = 0.2 - round(window_height/self.root.winfo_screenheight()/5,2) #float("{:.2f}".format(
 
-        cell_width = int(window_width // 6 *(0.75-perc_minus))
-        cell_height = int(window_height // 5*(0.75-perc_minus))
+        cell_width = int(window_width // 6 *(0.76-perc_minus))
+        cell_height = int(window_height // 5*(0.76-perc_minus))
 
         for i in range(30):
             resized_image = self.images[i].resize((cell_width, cell_height))
             self.photo = ImageTk.PhotoImage(resized_image)
             self.buttons[i].config(image=self.photo)
             self.buttons[i].image = self.photo
-
     
     def selectTeam(self,newtext, num):
         self.tableFrame.destroy()
