@@ -5,6 +5,11 @@ from nba_api.stats.static import players
 from pandastable import Table
 import pandas as pd
 import threading
+import requests
+
+#url = "https://data.oddsblaze.com/v1/odds/draftkings_nfl.json?key=your_key"
+#response = requests.get(url)
+#print(response.json())
 
 teamsCont = ['Atlanta Hawks', 'Boston Celtics', 'Cleveland Cavaliers', 'New Orleans Pelicans', 'Chicago Bulls', 'Dallas Mavericks', 'Denver Nuggets', 'Golden State Warriors', 'Houston Rockets', 'Los Angeles Clippers', 'Los Angeles Lakers', 'Miami Heat', 'Milwaukee Bucks', 'Minnesota Timberwolves', 'Brooklyn Nets', 'New York Knicks', 'Orlando Magic', 'Indiana Pacers', 'Philadelphia 76ers', 'Phoenix Suns', 'Portland Trail Blazers', 'Sacramento Kings', 'San Antonio Spurs', 'Oklahoma City Thunder', 'Toronto Raptors', 'Utah Jazz', 'Memphis Grizzlies', 'Washington Wizards', 'Detroit Pistons', 'Charlotte Hornets']
 teamIDs = [1610612737, 1610612738, 1610612739, 1610612740, 1610612741, 1610612742, 1610612743, 1610612744, 1610612745, 1610612746, 1610612747, 1610612748, 1610612749, 1610612750, 1610612751, 1610612752, 1610612753, 1610612754, 1610612755, 1610612756, 1610612757, 1610612758, 1610612759, 1610612760, 1610612761, 1610612762, 1610612763, 1610612764, 1610612765, 1610612766]
@@ -34,17 +39,20 @@ class App(threading.Thread):
         btn_Player = tk.Button(sidemenuFrame, text="Search For Player Data", height=2, width=40, command=self.togglePlayer)
         btn_Roster = tk.Button(sidemenuFrame, text="Get Roster Data", height=2, width=40, command=self.toggleTeam)
         btn_cntPlayer = tk.Button(sidemenuFrame, text="Check Bet", height=2, width=40, command=self.toggleCntPlayer)
+        btn_odds = tk.Button(sidemenuFrame, text="Odds", height=2, width=40)
         btn_Exit = tk.Button(sidemenuFrame, text="Exit", height=2, width=40, command=self.callback)
 
         btn_Player.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
         btn_Roster.grid(row=1, column=0, sticky="ew", padx=5)
         btn_cntPlayer.grid(row=2, column=0, sticky="ew", padx=5, pady=5)
-        btn_Exit.grid(row=3, column=0, sticky="ew", padx=5)
+        btn_odds.grid(row=3, column=0, sticky="ew", padx=5)
+        btn_Exit.grid(row=4, column=0, sticky="ew", padx=5, pady=5)
         sidemenuFrame.grid_propagate(False)
 
         Dfont = tk.font.Font(family = "Comic Sans MS",  size = 10) 
-        name = tk.Label(self.root, text="Made By: Gábor Markó, @mgabor711", bg="grey", font=Dfont)
-        name.place(rely=0.96)
+        name = tk.Label(sidemenuFrame, text="Made By: Gábor Markó, @mgabor711", bg="grey", font=Dfont)
+        sidemenuFrame.rowconfigure(5,weight=2)
+        name.grid(row=5, sticky="s")
 
         self.mainFrame = tk.Frame(master=self.root,width=500,height=600,bg="white")
         self.tableFrame = tk.Frame(master=self.mainFrame, bg="white")
