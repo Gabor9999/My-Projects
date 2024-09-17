@@ -1,0 +1,1 @@
+CREATE TABLE dept as select * from nikovits.dept;

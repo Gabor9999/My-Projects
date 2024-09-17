@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gyakorlas</title>
+</head>
+<body>
+    <form>
+        Hue: <input type="range" id = "h" min="0" max="360" value="0"> <br>
+        Saturation: <input type="range" id = "s" min="0" max="100" value="50"> <br>
+        Lightness: <input type="range" id = "l" min="0" max="100" value="50"> <br>
+        <button type="button" id="butt">Set background color</button> <br>
+        HSL string: <input type="text" id="valami" readonly>
+      </form>
+
+      <div id="contacts">
+        <section class="members">
+          <p class="name">Name: A</p>
+          <p class="email" hidden>Email of A</p>
+          <p class="address" hidden>Address of A</p>
+          <p class="phone" hidden>Phone of A</p>
+          <p class="buttons">
+            <button class = "button" data-toggle="email">Email</button>
+            <button class = "button" data-toggle="address">Address</button>
+            <button class = "button" data-toggle="phone">Phone</button>
+          </p>
+        </section>
+        <section class="members">
+          <p class="name">Name: B</p>
+          <p class="email" hidden>Email of B</p>
+          <p class="address" hidden>Address of B</p>
+          <p class="phone" hidden>Phone of B</p>
+          <p class="buttons">
+            <button class = "button" data-toggle="email">Email</button>
+            <button class = "button" id = "b5" data-toggle="address">Address</button>
+            <button class = "button" data-toggle="phone">Phone</button>
+          </p>
+        </section>
+        <section class="members">
+          <p class="name">Name: C</p>
+          <p class="email" hidden>Email of C</p>
+          <p class="address" hidden>Address of C</p>
+          <p class="phone" hidden>Phone of C</p>
+          <p class="buttons">
+            <button class = "button" data-toggle="email">Email</button>
+            <button class = "button" data-toggle="address">Address</button>
+            <button class = "button" data-toggle="phone">Phone</button>
+          </p>
+        </section>
+      </div>
+    <script src="script.js"></script>
+</body>
+</html>
