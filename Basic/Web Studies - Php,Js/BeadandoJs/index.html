@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JsBeadando</title>
+    <style>
+    body {
+        background-image: url("wallpaper.jpg");
+    }
+    .menu {
+        padding: 100px;
+        text-align: center;
+        border: 1px solid black;
+        margin: auto;
+        width: 400px;
+        border-radius: 25px;
+        background-color: pink;
+    }
+    .menu .playerbox {
+        padding-bottom: 25px;
+        text-align: center;
+    }
+    .menu .menuitem {
+        height: 30px;
+        width: 400px;
+        margin: 5px;
+        background-color: aquamarine;
+        border-radius: 25px;
+        font-weight: bold;
+        font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+    }
+    h1 {
+        text-align: center;
+    }
+    li {
+        text-align: left;
+        padding: 5px;
+    }
+    table {
+        margin: auto;
+        border-collapse: collapse;
+    }
+    td {
+        border: 1px solid black;
+        width: 50px;
+        height: 50px;
+        font-size: 30px;
+        text-align: center;
+    }
+    .buttons2{
+        text-align: center;
+    }
+    #time {
+        text-align: center;
+        margin: 5px;
+    }
+    #timetext {
+        text-align: center;
+        border-radius: 25px;
+    }
+    #reset, #megoldas, #back, #savegame {
+        margin: auto;
+        padding: 5px;
+        width: 400px;
+        background-color: aquamarine;
+        border-radius: 25px;
+        font-weight: bold;
+        font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+    }
+    #results {
+        text-align: center;
+        border: 1px solid black;
+        margin: auto;
+        width: 500px;
+        border-radius: 25px;
+        color:rgb(200, 200, 200);
+        background-color: rgb(16, 16, 16);
+    }
+    li {
+        list-style-type: circle;
+        margin-left: 10px;
+    }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    <div class="menu">
+        <div id="playername" class="playerbox">Játékos neve:
+            <input id="name"> <button id="Ment">Ment</button></div>
+        <button id="continue" class="menuitem">Folytatás</button>
+        <button id="startgame" class="menuitem">Új Játék</button><br>
+        <div id="buttons">
+            <button id="Level1" class="menuitem">Level 1</button> <br>
+            <button id="Level2" class="menuitem">Level 2</button> <br>
+            <button id="Level3" class="menuitem">Level 3</button> <br>
+        </div>
+        <button id="description" class="menuitem">Játék leírása</button>
+        <div id="destext">
+            <h1>A játék leírása</h1>
+            <li>A királynak négyzet alapú szobái vannak, amelyek fekete és fehér cellákból állnak.</li>
+            <li>A fehér cellákba villanykörtéket lehet elhelyezni.</li>
+            <li>A villanykörtékből a fény átlósan nem terjed, csak az adott sor és oszlop mentén.</li>
+            <li>A fekete cellákon valamilyen tereptárgy van, ami akadályozza a fény terjedését.</li>
+            <li>A fekete cellák opcionálisan egy egész számot is tartalmazhatnak 0-tól 4-ig. Ez azt jelzi, hogy hány szomszédos (alul, felül, jobbra, balra) cella tartalmaz villanykörtét. Ha van ilyen szám, akkor be kell tartani!</li>
+            <li>Két villanykörte soha nem világíthatja meg egymást!</li>
+            <li>A játék célja a villanykörtéket úgy elhelyezni, hogy minden fehér cellát megvilágítsanak.</li>
+            <li>A játékot egy játékos játssza, amíg meg nem oldja a rejtvényt, tehát több játékos egyidejű kezeléséről vagy körökre osztásról nem kell gondoskodni.</li>
+        </div>
+    </div>
+    <div id="results">Korábbi eredmények:
+    </div>
+    <div id="time">
+        <input id="timetext" value="0:00" size="5" readonly></input>
+    </div>
+    <div id="backbutton" class="buttons2">
+        <button id="savegame">Mentés</button>
+        <button id="megoldas">Megoldás</button>
+        <button id="reset">Reset</button>
+        <button id="back"> Vissza a menübe</button></div>
+    <script src="script.js"></script>
+</body>
+</html>

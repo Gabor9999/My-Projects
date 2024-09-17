@@ -1,0 +1,14 @@
+
+table {
+    margin: 0px auto;
+    border-collapse: collapse;
+  }
+  td {
+    border: 1px solid black;
+    width: 25px;
+    height: 25px;
+  }
+  input {
+    margin: 0px auto;
+    display: block;
+  }

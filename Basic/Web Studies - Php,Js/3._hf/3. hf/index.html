@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/www-assets@19.10.16/styles/mdss.min.css">
+    <title>3. házi feladat</title>
+    <style>
+        img {
+            width: 100px;
+            transition: 0.3s;
+        }
+        td {
+            border: 2px solid black;
+        }
+     </style>
+</head>
+<body>
+    <h1>3. házi feladat</h1>
+    <h2>Katona Bence Tamás - FPIP64</h2>
+
+    <svg width="200px" height="200px"> <line x1="0" y1="99%" x2="100%" y2="99%" stroke="black" /> <line x1="20%" y1="99%" x2="20%" y2="5%" stroke="black" /> <line x1="20%" y1="5%" x2="60%" y2="5%" stroke="black" /> <line x1="60%" y1="5%" x2="60%" y2="20%" stroke="black" /> <circle cx="60%" cy="30%" r="10%" /> <line x1="60%" y1="30%" x2="60%" y2="70%" stroke="black" /> <line x1="40%" y1="50%" x2="80%" y2="50%" stroke="black" /> <line x1="60%" y1="70%" x2="50%" y2="90%" stroke="black" /> <line x1="60%" y1="70%" x2="70%" y2="90%" stroke="black" /> </svg>
+
+    <h1>Akasztófa</h1>
+
+    <h2 id="allas"></h2>
+
+    <input id="aktualis" type="text" maxlength="1" placeholder="Tippelt betű">
+    <button>Tippelés</button>
+
+    <h3>Már tippelt betűk: <span id="tippelt"></span></h3>
+
+    <h3>Hibák száma: <span id="hibak">0</span></h3>
+
+    <script src="script.js"></script>
+</body>
+</html>
