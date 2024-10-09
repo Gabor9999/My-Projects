@@ -20,8 +20,8 @@ public class ChessBoard extends JPanel{
     private int blackKingPos;
     private int whiteKingPos;
     private ArrayList<Integer> possibleMoves;
-    private ArrayList<Integer> pieceMoves;
-    private boolean expectedMove;
+    private Map<Integer, ArrayList<Integer>> allPossibleMoves;
+    private int expectedMove;
 
     public ChessBoard(Board chessBoard) {
         this.board = chessBoard.getBoard();
@@ -31,6 +31,7 @@ public class ChessBoard extends JPanel{
         this.whiteTurn = this.playingWhite;
         this.blackDoublePush = -1;
         this.whiteDoublePush = -1;
+        this.expectedMove = -1;
         if(playingWhite) {
             this.blackKingPos = 3;
             this.whiteKingPos = 73;
@@ -39,8 +40,7 @@ public class ChessBoard extends JPanel{
             this.blackKingPos = 73;
         }
         possibleMoves = new ArrayList<>();
-        pieceMoves = new ArrayList<>();
-        this.expectedMove = false;
+        allPossibleMoves = new HashMap<>();
         this.isChecked = false;
         setLayout(new GridLayout(8, 8));
         createBoard();
@@ -65,104 +65,125 @@ public class ChessBoard extends JPanel{
         return images;
     }
 
-    private void addMoveIfValid(int target_row, int target_col, boolean showCircle) {
+    private void addMoveIfValid(int target_row, int target_col, int original_row, int original_col) {
         if (target_row >= 0 && target_row < 8 && target_col >= 0 && target_col < 8) {
-            if(isChecked) {
-                Piece temp = board[target_row][target_col];
-                board[target_row][target_col] = whiteTurn ? Piece.W_PAWN : Piece.B_PAWN;
-                Integer kingPosition = whiteTurn ? whiteKingPos : blackKingPos;
-                if(checkForCheck(kingPosition)) {
-                    board[target_row][target_col] = temp;
-                    return;
-                }
-                board[target_row][target_col] = temp;
-            }
             Character targetpiece = board[target_row][target_col].getSymbol();
-            if (targetpiece == ' ') {
-                if(showCircle) {buttons[target_row][target_col].setShowCircle(true);}
-                possibleMoves.add(target_row * 10 + target_col);
-            }
-            else if ((whiteTurn && Character.isLowerCase(targetpiece)) || 
-                    (!whiteTurn && Character.isUpperCase(targetpiece))) {
-                possibleMoves.add(target_row * 10 + target_col);
+            Integer target_num = target_row*10+target_col;
+            if ((whiteTurn && Character.isLowerCase(targetpiece)) || 
+                (!whiteTurn && Character.isUpperCase(targetpiece)) || targetpiece == ' ') {
+                if(isChecked) {
+                    Piece temp = board[target_row][target_col];
+                    Piece og_temp = board[original_row][original_col];
+                    board[target_row][target_col] = og_temp;
+                    board[original_row][original_col] = Piece.EMPTY;
+                    Integer kingPosition = whiteTurn ? (og_temp == Piece.W_KING ? target_num : whiteKingPos) : (og_temp == Piece.B_KING ? target_num : blackKingPos);
+                    whiteTurn = !whiteTurn;
+                    isChecked = false;
+                    ArrayList<Integer> tempPosMoves = new ArrayList<>(possibleMoves);
+                    Map<Integer, ArrayList<Integer>> tempMoves = new HashMap<>(allPossibleMoves);
+                    boolean res = checkForCheck(kingPosition);
+                    board[target_row][target_col] = temp;
+                    board[original_row][original_col] = og_temp;
+                    whiteTurn = !whiteTurn;
+                    isChecked = true;
+                    possibleMoves = tempPosMoves;
+                    allPossibleMoves = tempMoves;
+                    if(res) {
+                        return;
+                    }
+                }
+                possibleMoves.add(target_num);
             }
         }
     }
 
+    private void printBoard() {
+        System.out.println("--------------------------------------------------");
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+                System.out.print(board[r][c].getSymbol() + " ");
+            }
+            System.out.println();
+        }
+        System.out.println("--------------------------------------------------");
+    }
+
     // TODO
-    // Checks
-    // Check mate
     // Glitch: Castle Through Check Cancel
-    private void handlePawnMoves(int cur_row, int cur_col, boolean mainPlay, boolean showCircle) {
+    // Glitch: w_b takes b_p
+    // Glitch: double move to checing piece
+    private void handlePawnMoves(int cur_row, int cur_col, boolean mainPlay) {
         int forward = mainPlay ? -1:1;
         int startRow = mainPlay ? 6:1;
 
-        addMoveIfValid(cur_row + forward, cur_col, showCircle);
+        addMoveIfValid(cur_row + forward, cur_col, cur_row, cur_col);
 
-        if (cur_row == startRow && board[cur_row + forward][cur_col] == Piece.EMPTY) {
-            addMoveIfValid(cur_row + 2 * forward, cur_col, showCircle);
+        if (cur_row == startRow && board[cur_row + forward][cur_col] == Piece.EMPTY && board[cur_row + 2*forward][cur_col] == Piece.EMPTY) {
+            addMoveIfValid(cur_row + 2 * forward, cur_col, cur_row, cur_col);
         }
         if(cur_col != 0) {
             if(board[cur_row + forward][cur_col-1] != Piece.EMPTY) {
-                addMoveIfValid(cur_row + forward, cur_col - 1, showCircle);
+                addMoveIfValid(cur_row + forward, cur_col - 1, cur_row, cur_col);
             }
             else if(cur_row == 4 || cur_row == 3) {
                 if(whiteTurn) {
                     if(blackDoublePush == cur_col - 1) {
-                        addMoveIfValid(cur_row + forward, cur_col - 1, showCircle);
+                        addMoveIfValid(cur_row + forward, cur_col - 1, cur_row, cur_col);
                     }
                 } else if (whiteDoublePush == cur_col - 1) {
-                    addMoveIfValid(cur_row + forward, cur_col - 1, showCircle);
+                    addMoveIfValid(cur_row + forward, cur_col - 1, cur_row, cur_col);
                 }
             }
         }
         if(cur_col != 7) {
             if(board[cur_row + forward][cur_col+1] != Piece.EMPTY) {
-                addMoveIfValid(cur_row + forward, cur_col + 1, showCircle);
+                addMoveIfValid(cur_row + forward, cur_col + 1, cur_row, cur_col);
             }
             else if(cur_row == 4 || cur_row == 3) {
                 if(whiteTurn) {
                     if(blackDoublePush == cur_col + 1) {
-                        addMoveIfValid(cur_row + forward, cur_col + 1, showCircle);
+                        addMoveIfValid(cur_row + forward, cur_col + 1, cur_row, cur_col);
                     }
                 } else if (whiteDoublePush == cur_col + 1) {
-                    addMoveIfValid(cur_row + forward, cur_col + 1, showCircle);
+                    addMoveIfValid(cur_row + forward, cur_col + 1, cur_row, cur_col);
                 }
             }
         }
     }
 
-    private void handleRookMoves(int row, int col, int lim, int inc, boolean showCircle) {
+    private void handleRookMoves(int row, int col, int lim, int inc) {
         for(int get_row = row; get_row != lim; get_row += inc) {
-            addMoveIfValid(get_row, col-inc, showCircle);
+            addMoveIfValid(get_row, col-inc, row, col);
             if(board[get_row][col-inc] != Piece.EMPTY) {
                 break;
             }
         }
         for(int get_col = col; get_col != lim; get_col += inc) {
-            addMoveIfValid(row-inc, get_col, showCircle);
+            addMoveIfValid(row-inc, get_col, row, col);
             if(board[row-inc][get_col] != Piece.EMPTY) {
                 break;
             }
         }
     }
 
-    private void handleKnightMoves(int cur_row, int cur_col, boolean showCircle) {
-        addMoveIfValid(cur_row+1, cur_col-2, showCircle);
-        addMoveIfValid(cur_row+1, cur_col+2, showCircle);
-        addMoveIfValid(cur_row-1, cur_col+2, showCircle);
-        addMoveIfValid(cur_row-1, cur_col-2, showCircle);
-        addMoveIfValid(cur_row+2, cur_col-1, showCircle);
-        addMoveIfValid(cur_row+2, cur_col+1, showCircle);
-        addMoveIfValid(cur_row-2, cur_col-1, showCircle);
-        addMoveIfValid(cur_row-2, cur_col+1, showCircle);
+    private void handleKnightMoves(int cur_row, int cur_col) {
+        addMoveIfValid(cur_row+1, cur_col-2, cur_row, cur_col);
+        addMoveIfValid(cur_row+1, cur_col+2, cur_row, cur_col);
+        addMoveIfValid(cur_row-1, cur_col+2, cur_row, cur_col);
+        addMoveIfValid(cur_row-1, cur_col-2, cur_row, cur_col);
+        addMoveIfValid(cur_row+2, cur_col-1, cur_row, cur_col);
+        addMoveIfValid(cur_row+2, cur_col+1, cur_row, cur_col);
+        addMoveIfValid(cur_row-2, cur_col-1, cur_row, cur_col);
+        addMoveIfValid(cur_row-2, cur_col+1, cur_row, cur_col);
     }
 
-    private void handleBishopMoves(int Row, int Col, int inc1, int inc2, boolean showCircle) {
+    private void handleBishopMoves(int Row, int Col, int inc1, int inc2) {
         int lim1 = inc1 > 0 ? 8 : -1;
         int lim2 = inc2 > 0 ? 8 : -1;
+        int og_row = Row;
+        int og_col = Col;
         while(lim1 != Row && lim2 != Col){
-            addMoveIfValid(Row, Col, showCircle);
+            addMoveIfValid(Row, Col, og_row, og_col);
             if(board[Row][Col] != Piece.EMPTY) {
                 break;
             }
@@ -171,24 +192,24 @@ public class ChessBoard extends JPanel{
         }
     }
 
-    private void handleQueenMoves(int cur_row, int cur_col, boolean showCircle) {
-        handleBishopMoves(cur_row+1,cur_col+1,1,1, showCircle);
-        handleBishopMoves(cur_row+1,cur_col-1,1,-1, showCircle);
-        handleBishopMoves(cur_row-1,cur_col+1,-1,1, showCircle);
-        handleBishopMoves(cur_row-1,cur_col-1,-1,-1, showCircle);
-        handleRookMoves(cur_row+1,cur_col+1, 8, 1, showCircle);
-        handleRookMoves(cur_row-1,cur_col-1, -1, -1, showCircle);
+    private void handleQueenMoves(int cur_row, int cur_col) {
+        handleBishopMoves(cur_row+1,cur_col+1,1,1);
+        handleBishopMoves(cur_row+1,cur_col-1,1,-1);
+        handleBishopMoves(cur_row-1,cur_col+1,-1,1);
+        handleBishopMoves(cur_row-1,cur_col-1,-1,-1);
+        handleRookMoves(cur_row+1,cur_col+1, 8, 1);
+        handleRookMoves(cur_row-1,cur_col-1, -1, -1);
     }
 
-    private void handleKingMoves(int cur_row, int cur_col, boolean showCircle) {
-        addMoveIfValid(cur_row+1, cur_col-1, showCircle);
-        addMoveIfValid(cur_row+1, cur_col, showCircle);
-        addMoveIfValid(cur_row+1, cur_col+1, showCircle);
-        addMoveIfValid(cur_row, cur_col-1, showCircle);
-        addMoveIfValid(cur_row, cur_col+1, showCircle);
-        addMoveIfValid(cur_row-1, cur_col-1, showCircle);
-        addMoveIfValid(cur_row-1, cur_col+1, showCircle);
-        addMoveIfValid(cur_row-1, cur_col, showCircle);
+    private void handleKingMoves(int cur_row, int cur_col) {
+        addMoveIfValid(cur_row+1, cur_col-1, cur_row, cur_col);
+        addMoveIfValid(cur_row+1, cur_col, cur_row, cur_col);
+        addMoveIfValid(cur_row+1, cur_col+1, cur_row, cur_col);
+        addMoveIfValid(cur_row, cur_col-1, cur_row, cur_col);
+        addMoveIfValid(cur_row, cur_col+1, cur_row, cur_col);
+        addMoveIfValid(cur_row-1, cur_col-1, cur_row, cur_col);
+        addMoveIfValid(cur_row-1, cur_col+1, cur_row, cur_col);
+        addMoveIfValid(cur_row-1, cur_col, cur_row, cur_col);
         if((cur_row == 0 || cur_row == 7) && cur_col == 3) {
             boolean canCastle = true;
             for(int i = 2; i > 0; i--) {
@@ -198,7 +219,6 @@ public class ChessBoard extends JPanel{
                 }
             }
             if(canCastle && board[cur_row][0].getWorth() == 5) {
-                buttons[cur_row][cur_col - 2].setShowCircle(true);
                 possibleMoves.add(cur_row *10 + cur_col - 2);
             }
             canCastle = true;
@@ -210,7 +230,6 @@ public class ChessBoard extends JPanel{
             }
             if(canCastle && board[cur_row][7].getWorth() == 5) {
                 if(!checkForCheck(cur_row * 10 + 4) && !checkForCheck(cur_row * 10 + 5)) {
-                    buttons[cur_row][cur_col + 2].setShowCircle(true);
                     possibleMoves.add(cur_row *10 + cur_col + 2);
                 }  
             }
@@ -298,36 +317,34 @@ public class ChessBoard extends JPanel{
     }
 
     private boolean checkForCheck(int kingPosition) {
-        System.out.println(kingPosition);
-        ArrayList<Integer> moves = new ArrayList<>();
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                Piece piece = board[row][col];
-                
-                if (piece == Piece.EMPTY || (!whiteTurn && Character.isUpperCase(piece.getSymbol())) ||
-                    (whiteTurn && Character.isLowerCase(piece.getSymbol()))) {
-                    continue;
+        getAllValidMoves();
+        for (Integer key : allPossibleMoves.keySet()) {
+            for (int move : allPossibleMoves.get(key)) {
+                if (move == kingPosition) {
+                    return true;
                 }
-
-                moves.addAll(getValidMoves(piece.getSymbol(), row, col, false));
-                System.out.println(moves);
-                for (int move : moves) {
-                    if (move == kingPosition) {
-                        return true;
-                    }
-                }
-
-                moves.clear();
             }
         }
+
         return false;
     }
 
+    boolean checkForMate() {
+        for (ArrayList<Integer> value : allPossibleMoves.values()) {
+            if (!value.isEmpty()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private void makeMove(int cur_row, int cur_col) {
-        final int og_row = (int)(pieceMoves.get(0) / 10);
-        final int og_col = pieceMoves.get(0) % 10;
-        pieceMoves.remove(0);
-        if(pieceMoves.contains(cur_row*10+cur_col)) {
+        System.out.println(allPossibleMoves);
+        final int og_row = (int)(expectedMove / 10);
+        final int og_col = expectedMove % 10;
+        //pieceMoves.remove(0);
+        if(allPossibleMoves.get(expectedMove).contains(cur_row*10+cur_col)) {
             Piece piece = board[og_row][og_col];
             if(piece.getWorth() == 1 && (cur_row == 0 || cur_row == 7)) {
                 promotePawn(piece.getSymbol(), selectedPiece -> {
@@ -372,76 +389,110 @@ public class ChessBoard extends JPanel{
             }
             board[og_row][og_col] = Piece.EMPTY;
             buttons[og_row][og_col].setIcon(null);
+            for(Integer move : allPossibleMoves.get(expectedMove)) {
+                buttons[(int) (move / 10)][move % 10].setShowCircle(false);
+            }
             if(whiteTurn) {
                 isChecked = checkForCheck(blackKingPos);
                 blackDoublePush = -1;
             } else {
                 isChecked = checkForCheck(whiteKingPos);
-                System.out.println(isChecked);
-                whiteDoublePush = -1;
+                whiteDoublePush = -1;  
             }
             whiteTurn = !whiteTurn;
+            getAllValidMoves();
             repaint();
+            if(checkForMate()) {
+                JFrame frame = new JFrame("Game ended");
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setLayout(new GridLayout(1, 4));
+
+                JLabel label = new JLabel();
+
+                String text = isChecked ? (whiteTurn ? "Black won by checkmate" : "White won by checkmate") : "Draw by stalemate";
+ 
+                label.setText(text);
+
+                frame.add(label);
+
+                frame.pack();
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true); 
+            }
+        } else {
+            for(Integer move : allPossibleMoves.get(expectedMove)) {
+                buttons[(int) (move / 10)][move % 10].setShowCircle(false);
+            }
         }
-        for(int i = 0; i < pieceMoves.size(); i++) {
-            buttons[(int)(pieceMoves.get(i) / 10)][pieceMoves.get(i) % 10].setShowCircle(false);
-        }
-        pieceMoves.clear();
-        expectedMove = false;
+        expectedMove = -1;
     }
 
-    private ArrayList<Integer> getValidMoves(Character symbol, int cur_row, int cur_col, boolean showCircle) {
-        possibleMoves.clear();
+    private void getAllValidMoves() {
+        allPossibleMoves.clear();
         /*Piece temp = board[cur_row][cur_col];
         board[cur_row][cur_col] = Piece.EMPTY;
         Integer kingPosition = Character.isUpperCase(symbol) ? whiteKingPos : blackKingPos;
         if(Character.toUpperCase(symbol) != 'K' && checkForCheck(kingPosition)) {
             return possibleMoves;
         }
-        board[cur_row][cur_col] = temp;*/
-        switch (symbol) {
-            case 'P':
-                if(playingWhite) {
-                    handlePawnMoves(cur_row, cur_col,true, showCircle);
-                } else {
-                    handlePawnMoves(cur_row, cur_col,false, showCircle);
+        board[cur_row][cur_col] = temp;
+        System.out.println("BREAK");
+        printBoard();*/
+        for (int rows = 0; rows < 8; rows++) {
+            for (int cols = 0; cols < 8; cols++) {
+                Character piece = board[rows][cols].getSymbol();
+                
+                if (piece == ' ' || (!whiteTurn && Character.isUpperCase(piece)) ||
+                    (whiteTurn && Character.isLowerCase(piece))) {
+                    continue;
                 }
-                break;
-            case 'p':
-                if(playingWhite) {
-                    handlePawnMoves(cur_row, cur_col,false, showCircle);
-                } else {
-                    handlePawnMoves(cur_row, cur_col,true, showCircle);
+                //System.out.println("Row: " + rows + " " + "Col: " + cols + " -> " + whiteTurn);
+                possibleMoves.clear();
+                switch (piece) {
+                    case 'P':
+                        if(playingWhite) {
+                            handlePawnMoves(rows, cols,true);
+                        } else {
+                            handlePawnMoves(rows, cols,false);
+                        }
+                        break;
+                    case 'p':
+                        if(playingWhite) {
+                            handlePawnMoves(rows, cols,false);
+                        } else {
+                            handlePawnMoves(rows, cols,true);
+                        }
+                        break;
+                    case 'R':
+                    case 'r':
+                        handleRookMoves(rows+1,cols+1, 8, 1);
+                        handleRookMoves(rows-1,cols-1, -1, -1);
+                        break;
+                    case 'n':
+                    case 'N':
+                        handleKnightMoves(rows, cols);
+                        break;
+                    case 'b':
+                    case 'B':
+                        handleBishopMoves(rows+1,cols+1,1,1);
+                        handleBishopMoves(rows+1,cols-1,1,-1);
+                        handleBishopMoves(rows-1,cols+1,-1,1);
+                        handleBishopMoves(rows-1,cols-1,-1,-1);
+                        break;
+                    case 'k':
+                    case 'K':
+                        handleKingMoves(rows, cols);
+                        break;
+                    case 'q':
+                    case 'Q':
+                        handleQueenMoves(rows, cols);
+                        break;
+                    default:
+                        break;
                 }
-                break;
-            case 'R':
-            case 'r':
-                handleRookMoves(cur_row+1,cur_col+1, 8, 1, showCircle);
-                handleRookMoves(cur_row-1,cur_col-1, -1, -1, showCircle);
-                break;
-            case 'n':
-            case 'N':
-                handleKnightMoves(cur_row, cur_col, showCircle);
-                break;
-            case 'b':
-            case 'B':
-                handleBishopMoves(cur_row+1,cur_col+1,1,1, showCircle);
-                handleBishopMoves(cur_row+1,cur_col-1,1,-1, showCircle);
-                handleBishopMoves(cur_row-1,cur_col+1,-1,1, showCircle);
-                handleBishopMoves(cur_row-1,cur_col-1,-1,-1, showCircle);
-                break;
-            case 'k':
-            case 'K':
-                handleKingMoves(cur_row,cur_col, showCircle);
-                break;
-            case 'q':
-            case 'Q':
-                handleQueenMoves(cur_row,cur_col, showCircle);
-                break;
-            default:
-                break;
+                allPossibleMoves.put(rows*10+cols, new ArrayList<>(possibleMoves));
+            }
         }
-        return possibleMoves;
     }
 
     private void createBoard() {
@@ -471,15 +522,21 @@ public class ChessBoard extends JPanel{
 
                 square.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        if(expectedMove) {
+                        if(expectedMove != -1) {
                             makeMove(cur_row, cur_col);
                             return;
                         }
                         Character pieceSymbol = board[cur_row][cur_col].getSymbol();
                         if(pieceSymbol == ' ' || (Character.isUpperCase(pieceSymbol) && !whiteTurn) || (!Character.isUpperCase(pieceSymbol) && whiteTurn)) {return;}
+                        expectedMove = cur_row*10 + cur_col;
+                        for(Integer move : allPossibleMoves.get(expectedMove)) {
+                            if(board[(int) (move / 10)][move % 10] == Piece.EMPTY) {
+                                buttons[(int) (move / 10)][move % 10].setShowCircle(true);
+                            }
+                        }
+                        /*
                         pieceMoves.add(cur_row*10 + cur_col);
-                        expectedMove = true;
-                        pieceMoves.addAll(getValidMoves(pieceSymbol, cur_row, cur_col, true));
+                        pieceMoves.addAll(getValidMoves(pieceSymbol, cur_row, cur_col, true));*/
                     }
                 });
                 add(square);
@@ -487,5 +544,6 @@ public class ChessBoard extends JPanel{
 
             isDarkSquare = !isDarkSquare;
         }
+        getAllValidMoves();
     }
 }
